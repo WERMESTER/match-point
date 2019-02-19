@@ -1,0 +1,4 @@
+rootProject.name = 'match-point'
+include 'teams/back'
+include 'teams/front'
+
