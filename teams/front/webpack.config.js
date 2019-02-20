@@ -1,7 +1,7 @@
 const  HtmlWebpackPlugin =require('html-webpack-plugin');
 
 module.exports = {
-    entry: './src/teams-front.js',
+    entry: './src/teams.js',
     module: {
         rules: [
             {
