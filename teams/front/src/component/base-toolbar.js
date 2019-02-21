@@ -20,7 +20,7 @@ export default class BaseToolbar extends React.Component {
     render() {
         return (
             <Toolbar>
-                <IconButton>
+                <IconButton onClick={this.props.onClick}>
                     <FaTumblr/>
                 </IconButton>
             </Toolbar>

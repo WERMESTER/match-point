@@ -33,6 +33,7 @@
     "@material-ui/core": "^3.9.2",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
-    "react-icons": "^3.4.0"
+    "react-icons": "^3.4.0",
+    "react-select": "^2.4.1"
   }
 }
