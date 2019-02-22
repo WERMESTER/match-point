@@ -8,21 +8,51 @@ import ListItem from "@material-ui/core/ListItem/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import List from "@material-ui/core/List/List";
-import {FaPlusSquare} from "react-icons/fa";
+import {FaPlusSquare, FaQuestion} from "react-icons/fa";
 import {IconContext} from "react-icons";
 import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Grid from "@material-ui/core/Grid/Grid";
 import TextField from "@material-ui/core/TextField/TextField";
-import Select from "react-select/dist/react-select";
+import Paper from "@material-ui/core/Paper/Paper";
+import Avatar from "@material-ui/core/Avatar/Avatar";
 
 const allTeams = [
     new Team('ASSVB'),
     new Team('PUC')
-].map(team => ({
-    value: team.name,
-    label: team.name,
-}));
+];
+
+
+class ListTeams extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            teams: props.teams,
+        };
+    }
+
+
+    render() {
+        return (
+            <List>
+                {this.state.teams.map((element, i) => {
+                    return (
+                        <ListItem button onClick={this.props.onSelect} key={i}>
+                            <ListItemIcon>
+                                <Avatar>
+                                    <FaQuestion/>
+                                </Avatar>
+                            </ListItemIcon>
+                            <ListItemText>
+                                {element.name}
+                            </ListItemText>
+                        </ListItem>
+                    );
+                })}
+            </List>
+        )
+    }
+}
 
 const styles = theme => ({
     root: {
@@ -77,27 +107,33 @@ const styles = theme => ({
     teamChooser: {
         textAlign: 'center',
         paddingTop: '35vh'
+    },
+    hidden: {
+        display: 'none'
     }
 });
-
-function Control(props) {
-    return (<TextField ref={props.innerRef} children={props.children} fullWidth label={"Choose your team"} {...props.innerProps}/>)
-}
 
 class Home extends TeamsPage {
 
 
     constructor(props) {
         super(props);
-        this.state = {team: null, openMenu: false};
-        this.handleConnect = this.handleConnect.bind(this);
+        this.state = {
+            team: null,
+            openMenu: false,
+            choosing: false
+        };
+        this.connect = this.connect.bind(this);
         this.menuTransition = this.menuTransition.bind(this);
         this.menuClose = this.menuClose.bind(this);
+        this.filter = this.filter.bind(this);
+        this.btb = React.createRef();
+        this.cyt = React.createRef();
     }
 
-    handleConnect() {
+    connect() {
         let team = new Team("ASS");
-        let btb = this.refs.btb;
+        let btb = this.btb;
         this.setState(state => {
             state.team = team;
             btb.connect(team);
@@ -114,12 +150,16 @@ class Home extends TeamsPage {
         this.setState({openMenu: !this.state.openMenu})
     }
 
+    filter() {
+
+    }
+
     render() {
         const {classes, theme} = this.props;
         return (
             <div className={classes.root}>
                 <AppBar color={'default'} className={classes.bar}>
-                    <BaseToolbar ref={"btb"} id={"testing"} onClick={this.menuTransition}/>
+                    <BaseToolbar ref={this.btb} id={"testing"} onClick={this.menuTransition}/>
                 </AppBar>
                 <Drawer variant={"permanent"} className={classes.menu}>
                     <IconContext.Provider value={{size: "1.5em"}}>
@@ -137,12 +177,16 @@ class Home extends TeamsPage {
 
                         </Grid>
                         <Grid item xs={4}>
-                            <Select
-                                autoFocus={false}
-                                options={allTeams}
-                                components={{Control}}
-                                isClearable
-                            />
+                            <TextField ref={this.cyt} fullWidth label={"Choose your team"} onKeyDown={this.filter} onFocus={() => this.setState({choosing: true})}/>
+                            <Paper className={classNames({[classes.hidden]: !this.state.choosing})}>
+                                <ListTeams teams={allTeams} onSelect={(e) => {
+                                    console.log("select");
+                                    this.setState({choosing: false});
+                                    console.log(this.btb);
+                                    this.setState({team: new Team('test')});
+                                    console.log(this.cyt);
+                                }}/>
+                            </Paper>
                         </Grid>
                         <Grid item xs={4}>
 
